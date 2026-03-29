@@ -14,3 +14,4 @@ export async function POST(req: NextRequest) {
   await supabaseAdmin.from('comment_replies').insert({ user_id: session.user.id, original_comment: comment, post_context: context, replies })
   return NextResponse.json({ replies })
 }
+export const dynamic = 'force-dynamic' 

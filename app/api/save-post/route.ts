@@ -39,3 +39,4 @@ export async function DELETE(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json({ ok: true })
 }
+export const dynamic = 'force-dynamic' 

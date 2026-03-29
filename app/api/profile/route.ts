@@ -30,3 +30,4 @@ export async function PUT(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json({ profile: data })
 }
+export const dynamic = 'force-dynamic' 

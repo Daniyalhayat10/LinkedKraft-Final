@@ -17,7 +17,6 @@ const CSS = `
 @keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes orbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
-.fade-up{animation:fadeUp .5s ease both}
 .scale-in{animation:scaleIn .4s ease both}
 `
 
@@ -42,81 +41,50 @@ export default function Onboarding() {
   }, [])
 
   const analyzeVoice = async () => {
-    if (samples.trim().length < 80) {
-      toast.error('Please paste at least 80 characters of your writing')
-      return
-    }
+    if (samples.trim().length < 80) { toast.error('Please paste at least 80 characters'); return }
     setAnalyzing(true)
     try {
-      const res = await fetch('/api/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ voice_samples: samples, full_name: name, role_title: role, default_tone: tone, default_language: lang }),
-      })
+      const res = await fetch('/api/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ voice_samples: samples, full_name: name, role_title: role, default_tone: tone, default_language: lang }) })
       const data = await res.json()
       if (data.profile?.voice_dna) setDna(data.profile.voice_dna)
       toast.success('Voice DNA analyzed!')
       setStep(3)
-    } catch (e) {
-      toast.error('Analysis failed, please retry')
-    } finally {
-      setAnalyzing(false)
-    }
+    } catch (e) { toast.error('Analysis failed, please retry') }
+    finally { setAnalyzing(false) }
   }
 
   const skipVoice = async () => {
     setSaving(true)
-    await fetch('/api/profile', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ full_name: name, role_title: role, default_tone: tone, default_language: lang }),
-    })
+    await fetch('/api/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ full_name: name, role_title: role, default_tone: tone, default_language: lang }) })
     setSaving(false)
     router.push('/dashboard')
   }
 
   const finish = async () => {
     setSaving(true)
-    await fetch('/api/profile', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ full_name: name, role_title: role, default_tone: tone, default_language: lang }),
-    })
+    await fetch('/api/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ full_name: name, role_title: role, default_tone: tone, default_language: lang }) })
     setSaving(false)
-    toast.success('Profile saved! Let\'s create your first post.')
+    toast.success('Profile saved!')
     router.push('/dashboard/generate')
   }
 
-  const nextStep1 = () => {
-    if (!name.trim()) { toast.error('Please enter your name'); return }
-    setStep(1)
-  }
-  const nextStep2 = () => setStep(2)
-
-  const progress = ((step) / (STEPS.length - 1)) * 100
+  const progress = (step / (STEPS.length - 1)) * 100
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--cream)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--cream)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <style>{CSS}</style>
-      {/* Orbs */}
-      <div style={{ position: 'fixed', width: 500, height: 500, top: -100, right: -100, borderRadius: '50%', background: 'radial-gradient(circle,rgba(10,102,194,.09),transparent 70%)', filter: 'blur(60px)', animation: 'orbFloat 14s linear infinite', pointerEvents: 'none' }} />
-      <div style={{ position: 'fixed', width: 350, height: 350, bottom: -50, left: -50, borderRadius: '50%', background: 'radial-gradient(circle,rgba(201,168,76,.1),transparent 70%)', filter: 'blur(55px)', animation: 'orbFloat 18s linear infinite reverse', pointerEvents: 'none' }} />
-
-      <div style={{ width: '100%', maxWidth: 560, position: 'relative', zIndex: 1 }}>
-        {/* Logo */}
+      <div style={{ width: '100%', maxWidth: 560 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 22, fontWeight: 900 }}>Linked<span style={{ color: 'var(--blue)' }}>Craft</span></div>
+          <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 22, fontWeight: 900 }}>Linked<span style={{ color: 'var(--blue)' }}>Kraft</span></div>
         </div>
-
-        {/* Progress */}
         <div style={{ marginBottom: 32 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
             {STEPS.map((s, i) => (
               <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 24, height: 24, borderRadius: '50%', background: i <= step ? 'var(--blue)' : 'white', border: `2px solid ${i <= step ? 'var(--blue)' : 'var(--border-mid)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: i <= step ? 'white' : 'var(--muted)', transition: 'all .3s' }}>
+                <div style={{ width: 24, height: 24, borderRadius: '50%', background: i <= step ? 'var(--blue)' : 'white', border: `2px solid ${i <= step ? 'var(--blue)' : 'var(--border-mid)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: i <= step ? 'white' : 'var(--muted)' }}>
                   {i < step ? '✓' : i + 1}
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 500, color: i === step ? 'var(--ink)' : 'var(--muted-light)', display: window?.innerWidth > 500 ? 'block' : 'none' }}>{s}</span>
+                <span style={{ fontSize: 11, fontWeight: 500, color: i === step ? 'var(--ink)' : 'var(--muted-light)' }}>{s}</span>
               </div>
             ))}
           </div>
@@ -125,42 +93,33 @@ export default function Onboarding() {
           </div>
         </div>
 
-        {/* Card */}
-        <div key={step} className="scale-in" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-xl)', padding: '40px 40px', boxShadow: 'var(--shadow-lg)' }}>
-
-          {/* STEP 0 */}
+        <div key={step} className="scale-in" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-xl)', padding: '40px', boxShadow: 'var(--shadow-lg)' }}>
           {step === 0 && (
             <div>
               <div style={{ fontSize: 36, marginBottom: 16 }}>👋</div>
-              <h1 style={{ fontFamily: 'Playfair Display,serif', fontSize: 28, fontWeight: 900, marginBottom: 8, letterSpacing: '-0.8px' }}>Welcome to LinkedKraft</h1>
-              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.7 }}>Let&apos;s set up your profile in under 2 minutes so every post sounds exactly like you.</p>
+              <h1 style={{ fontFamily: 'Playfair Display,serif', fontSize: 28, fontWeight: 900, marginBottom: 8 }}>Welcome to LinkedKraft</h1>
+              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.7 }}>Let&apos;s set up your profile in under 2 minutes.</p>
               <div style={{ marginBottom: 20 }}>
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 6 }}>Your name</label>
-                <input value={name} onChange={e => setName(e.target.value)} placeholder="Sarah Mitchell" style={iStyle}
-                  onFocus={e => (e.target as HTMLElement).style.borderColor = 'var(--blue)'}
-                  onBlur={e => (e.target as HTMLElement).style.borderColor = 'var(--border-mid)'} />
+                <input value={name} onChange={e => setName(e.target.value)} placeholder="Sarah Mitchell" style={iStyle} />
               </div>
-              <button onClick={nextStep1} style={btnStyle}>Continue →</button>
+              <button onClick={() => { if (!name.trim()) { toast.error('Please enter your name'); return } setStep(1) }} style={btnStyle}>Continue →</button>
             </div>
           )}
-
-          {/* STEP 1 */}
           {step === 1 && (
             <div>
               <div style={{ fontSize: 36, marginBottom: 16 }}>🎯</div>
-              <h2 style={{ fontFamily: 'Playfair Display,serif', fontSize: 26, fontWeight: 900, marginBottom: 8, letterSpacing: '-0.7px' }}>Tell us about your work</h2>
-              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.7 }}>This helps us generate content that fits your audience and industry.</p>
+              <h2 style={{ fontFamily: 'Playfair Display,serif', fontSize: 26, fontWeight: 900, marginBottom: 8 }}>Tell us about your work</h2>
+              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.7 }}>This helps us generate content that fits your audience.</p>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 6 }}>Your role / title</label>
-                <input value={role} onChange={e => setRole(e.target.value)} placeholder="e.g. Founder & CEO, Marketing Lead, Consultant..." style={iStyle}
-                  onFocus={e => (e.target as HTMLElement).style.borderColor = 'var(--blue)'}
-                  onBlur={e => (e.target as HTMLElement).style.borderColor = 'var(--border-mid)'} />
+                <input value={role} onChange={e => setRole(e.target.value)} placeholder="e.g. Founder & CEO, Marketing Lead..." style={iStyle} />
               </div>
               <div style={{ marginBottom: 16 }}>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 10 }}>Preferred writing tone</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 10 }}>Preferred tone</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {TONES.map(t => (
-                    <button key={t} onClick={() => setTone(t)} style={{ padding: '7px 14px', borderRadius: 50, fontSize: 12, fontWeight: 500, cursor: 'pointer', transition: 'all .18s', fontFamily: 'DM Sans,sans-serif', background: tone === t ? 'var(--ink)' : 'var(--cream)', border: `1px solid ${tone === t ? 'var(--ink)' : 'var(--border-mid)'}`, color: tone === t ? 'white' : 'var(--ink)' }}>{t}</button>
+                    <button key={t} onClick={() => setTone(t)} style={{ padding: '7px 14px', borderRadius: 50, fontSize: 12, fontWeight: 500, cursor: 'pointer', fontFamily: 'DM Sans,sans-serif', background: tone === t ? 'var(--ink)' : 'var(--cream)', border: `1px solid ${tone === t ? 'var(--ink)' : 'var(--border-mid)'}`, color: tone === t ? 'white' : 'var(--ink)' }}>{t}</button>
                   ))}
                 </div>
               </div>
@@ -168,71 +127,41 @@ export default function Onboarding() {
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 10 }}>Primary language</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
                   {LANGS.map(l => (
-                    <button key={l.code} onClick={() => setLang(l.code)} style={{ padding: '10px', borderRadius: 'var(--r-sm)', fontSize: 13, fontWeight: 500, cursor: 'pointer', transition: 'all .18s', fontFamily: 'DM Sans,sans-serif', background: lang === l.code ? 'var(--blue-light)' : 'var(--cream)', border: `1.5px solid ${lang === l.code ? 'var(--blue)' : 'var(--border)'}`, color: lang === l.code ? 'var(--blue)' : 'var(--ink)', textAlign: 'center' }}>
+                    <button key={l.code} onClick={() => setLang(l.code)} style={{ padding: '10px', borderRadius: 'var(--r-sm)', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'DM Sans,sans-serif', background: lang === l.code ? 'var(--blue-light)' : 'var(--cream)', border: `1.5px solid ${lang === l.code ? 'var(--blue)' : 'var(--border)'}`, color: lang === l.code ? 'var(--blue)' : 'var(--ink)', textAlign: 'center' }}>
                       <div>{l.flag}</div><div style={{ fontSize: 11 }}>{l.name}</div>
                     </button>
                   ))}
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
-                <button onClick={() => setStep(0)} style={{ ...btnOutlineStyle, flex: '0 0 auto' }}>← Back</button>
-                <button onClick={nextStep2} style={{ ...btnStyle, flex: 1 }}>Continue →</button>
+                <button onClick={() => setStep(0)} style={btnOutlineStyle}>← Back</button>
+                <button onClick={() => setStep(2)} style={{ ...btnStyle, flex: 1 }}>Continue →</button>
               </div>
             </div>
           )}
-
-          {/* STEP 2 - VOICE DNA */}
           {step === 2 && (
             <div>
               <div style={{ fontSize: 36, marginBottom: 16 }}>🧬</div>
-              <h2 style={{ fontFamily: 'Playfair Display,serif', fontSize: 26, fontWeight: 900, marginBottom: 8, letterSpacing: '-0.7px' }}>Train your Voice DNA</h2>
-              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 8, lineHeight: 1.7 }}>Paste 2–3 of your best LinkedIn posts below. Our AI will extract your writing fingerprint and inject it into every generation.</p>
-              <p style={{ fontSize: 12, color: 'var(--blue)', marginBottom: 20, fontWeight: 500 }}>📌 The more authentic the samples, the better your results.</p>
+              <h2 style={{ fontFamily: 'Playfair Display,serif', fontSize: 26, fontWeight: 900, marginBottom: 8 }}>Train your Voice DNA</h2>
+              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 20, lineHeight: 1.7 }}>Paste 2-3 of your best LinkedIn posts. Our AI extracts your writing fingerprint.</p>
               <div style={{ marginBottom: 20 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <label style={{ fontSize: 12, fontWeight: 600 }}>Your writing samples</label>
-                  <span style={{ fontSize: 11, color: 'var(--muted-light)' }}>{samples.length} chars</span>
-                </div>
-                <textarea value={samples} onChange={e => setSamples(e.target.value)} rows={8}
-                  placeholder="Paste 2-3 of your real LinkedIn posts here. Include the full text including hashtags if you use them. The more authentic, the better..."
-                  style={{ ...iStyle, resize: 'vertical', fontFamily: 'DM Sans,sans-serif', lineHeight: 1.6 }}
-                  onFocus={e => (e.target as HTMLElement).style.borderColor = 'var(--blue)'}
-                  onBlur={e => (e.target as HTMLElement).style.borderColor = 'var(--border-mid)'} />
+                <textarea value={samples} onChange={e => setSamples(e.target.value)} rows={8} placeholder="Paste 2-3 of your real LinkedIn posts here..." style={{ ...iStyle, resize: 'vertical', fontFamily: 'DM Sans,sans-serif', lineHeight: 1.6 }} />
               </div>
-              <button onClick={analyzeVoice} disabled={analyzing} className={analyzing ? 'btn-loading' : ''} style={{ ...btnStyle, marginBottom: 12, width: '100%' }}>
-                {analyzing ? 'Analyzing your voice...' : '🧬 Analyze my Voice DNA →'}
+              <button onClick={analyzeVoice} disabled={analyzing} style={{ ...btnStyle, marginBottom: 12, width: '100%' }}>
+                {analyzing ? 'Analyzing...' : '🧬 Analyze my Voice DNA →'}
               </button>
               <div style={{ display: 'flex', gap: 10 }}>
-                <button onClick={() => setStep(1)} style={{ ...btnOutlineStyle, flex: 1 }}>← Back</button>
+                <button onClick={() => setStep(1)} style={btnOutlineStyle}>← Back</button>
                 <button onClick={skipVoice} disabled={saving} style={{ flex: 1, background: 'transparent', border: '1px solid var(--border-mid)', borderRadius: 50, padding: '11px 20px', fontSize: 13, fontWeight: 500, cursor: 'pointer', color: 'var(--muted)', fontFamily: 'DM Sans,sans-serif' }}>Skip for now</button>
               </div>
             </div>
           )}
-
-          {/* STEP 3 - DONE */}
           {step === 3 && (
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
-              <h2 style={{ fontFamily: 'Playfair Display,serif', fontSize: 28, fontWeight: 900, marginBottom: 8, letterSpacing: '-0.8px' }}>You&apos;re all set, {name.split(' ')[0]}!</h2>
-              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.7 }}>Your Voice DNA has been trained. Every post will now sound unmistakably like you.</p>
-              {dna && (
-                <div style={{ background: 'var(--cream-card)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: '20px 24px', marginBottom: 28, textAlign: 'left' }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--blue)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span>🧬</span> Your Voice DNA Fingerprint
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    {Object.entries(dna).map(([k, v]) => (
-                      <div key={k} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', padding: '10px 12px' }}>
-                        <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--muted-light)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 3 }}>{k.replace(/([A-Z])/g, ' $1').trim()}</div>
-                        <div style={{ fontSize: 13, fontWeight: 600 }}>{String(v)}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <button onClick={finish} disabled={saving} className={saving ? 'btn-loading' : ''} style={{ ...btnStyle, width: '100%', fontSize: 15 }}>
-                Create my first post →
-              </button>
+              <h2 style={{ fontFamily: 'Playfair Display,serif', fontSize: 28, fontWeight: 900, marginBottom: 8 }}>You&apos;re all set!</h2>
+              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 28, lineHeight: 1.7 }}>Your Voice DNA is trained. Every post will sound like you.</p>
+              <button onClick={finish} disabled={saving} style={{ ...btnStyle, width: '100%', fontSize: 15 }}>Create my first post →</button>
             </div>
           )}
         </div>
@@ -241,18 +170,6 @@ export default function Onboarding() {
   )
 }
 
-const iStyle: React.CSSProperties = {
-  width: '100%', padding: '11px 14px', border: '1.5px solid var(--border-mid)',
-  borderRadius: 'var(--r-sm)', fontSize: 14, fontFamily: 'DM Sans,sans-serif',
-  outline: 'none', transition: 'border-color .18s', background: 'white',
-}
-const btnStyle: React.CSSProperties = {
-  display: 'block', width: '100%', padding: '13px 24px', background: 'var(--ink)',
-  color: 'var(--cream)', border: 'none', borderRadius: 50, fontSize: 14, fontWeight: 700,
-  cursor: 'pointer', fontFamily: 'DM Sans,sans-serif', transition: 'background .2s',
-}
-const btnOutlineStyle: React.CSSProperties = {
-  padding: '11px 20px', background: 'transparent', border: '1.5px solid var(--border-mid)',
-  borderRadius: 50, fontSize: 13, fontWeight: 600, cursor: 'pointer', color: 'var(--ink)',
-  fontFamily: 'DM Sans,sans-serif',
-}
+const iStyle: React.CSSProperties = { width: '100%', padding: '11px 14px', border: '1.5px solid var(--border-mid)', borderRadius: 'var(--r-sm)', fontSize: 14, fontFamily: 'DM Sans,sans-serif', outline: 'none', background: 'white' }
+const btnStyle: React.CSSProperties = { display: 'block', width: '100%', padding: '13px 24px', background: 'var(--ink)', color: 'var(--cream)', border: 'none', borderRadius: 50, fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans,sans-serif' }
+const btnOutlineStyle: React.CSSProperties = { padding: '11px 20px', background: 'transparent', border: '1.5px solid var(--border-mid)', borderRadius: 50, fontSize: 13, fontWeight: 600, cursor: 'pointer', color: 'var(--ink)', fontFamily: 'DM Sans,sans-serif' }

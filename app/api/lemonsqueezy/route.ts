@@ -90,3 +90,4 @@ export async function GET(req: NextRequest) {
   const url = `https://app.lemonsqueezy.com/my-orders`
   return NextResponse.json({ url })
 }
+export const dynamic = 'force-dynamic' 

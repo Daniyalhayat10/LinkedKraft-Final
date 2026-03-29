@@ -12,3 +12,4 @@ export async function POST(req: NextRequest) {
   const posts = await repurposeContent(content, tone || 'Thought Leader', profile?.voice_dna)
   return NextResponse.json({ posts })
 }
+export const dynamic = 'force-dynamic' 
