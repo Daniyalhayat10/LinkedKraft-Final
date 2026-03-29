@@ -250,7 +250,7 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
           <h3 style={{ fontFamily: 'Playfair Display,serif', fontSize: 24, fontWeight: 900, marginBottom: 6 }}>Upgrade Your Plan</h3>
           <p style={{ fontSize: 13, color: 'var(--muted)' }}>Unlock unlimited posts and all premium features.</p>
         </div>
-        <div style={{ display: 'inline-flex', background: 'var(--cream)', border: '1px solid var(--border)', borderRadius: 50, overflow: 'hidden', margin: '0 auto 24px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'inline-flex', background: 'var(--cream)', border: '1px solid var(--border)', borderRadius: 50, overflow: 'hidden', margin: '0 auto 24px', justifyContent: 'center' }}>
           {(['monthly', 'annual'] as const).map(b => (
             <button key={b} onClick={() => setBilling(b)} style={{ padding: '8px 20px', fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', borderRadius: 50, background: billing === b ? 'var(--ink)' : 'transparent', color: billing === b ? 'white' : 'var(--muted)', fontFamily: 'DM Sans,sans-serif', transition: 'all .2s' }}>
               {b === 'monthly' ? 'Monthly' : 'Annual (–20%)'}
