@@ -1,9 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
 import { createClientComponentClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
 
 export const createBrowserClient = () => createClientComponentClient()
-export const createServerClient = () => createServerComponentClient({ cookies })
+export const createServerClient = (cookieStore?: any) => {
+  const { cookies } = require('next/headers')
+  return createServerComponentClient({ cookies })
+}
 
 export const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
